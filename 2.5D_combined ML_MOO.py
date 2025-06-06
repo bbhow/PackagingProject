@@ -61,7 +61,7 @@ XGB_MAX_DEPTH_RANGE = [2, 3, 4, 5, 6, 8]
 N_ESTIMATORS_DEFAULT = 100
 TOP_N_FEATURES = 10
 
-PLOTS_DIR = "../../Documents/School/Packaging/2.5D packaging project/optimization_plots_combined_v2"
+PLOTS_DIR = "../../Packaging/2.5D packaging project/optimization_plots_combined_v2"
 os.makedirs(PLOTS_DIR, exist_ok=True)
 print(f"Plots will be saved to '{PLOTS_DIR}/' directory.")
 
