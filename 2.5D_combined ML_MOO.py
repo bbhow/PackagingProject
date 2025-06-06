@@ -65,6 +65,19 @@ PLOTS_DIR = "../../Packaging/2.5D packaging project/optimization_plots_combined_
 os.makedirs(PLOTS_DIR, exist_ok=True)
 print(f"Plots will be saved to '{PLOTS_DIR}/' directory.")
 
+#--- Plot configs ---
+plt.rcParams.update({
+    "font.size": 12,
+    "axes.titlesize": 16,
+    "axes.labelsize": 14,
+    "legend.fontsize": 12,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "axes.grid": True,
+    "grid.linestyle": "--",
+    "grid.linewidth": 0.5,
+    "grid.color": "gray"
+})
 
 # --- Helper Functions ---
 
@@ -405,7 +418,7 @@ def generate_diagnostic_subplots(estimator_class, base_params,
 
     fig.suptitle(main_plot_title, fontsize=18)
     try:
-        plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Adjust layout to prevent title overlap
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95],pad=2.0)  # Adjust layout to prevent title overlap
     except UserWarning as e:  # Catch potential UserWarning from tight_layout
         print(f"    UserWarning during tight_layout: {e}")
 
@@ -924,8 +937,8 @@ def run_combined_workflow():
                     ax.plot(poly_x, poly_y, "--", c="r", lw=1.5, label="Objective Anchors")
                     ax.scatter(anchors[:, 0], anchors[:, 1], marker="^", c="r", s=120)  # Mark anchors
                     for il, lab in enumerate(active_objective_names_for_pymoo):  # Label anchors
-                        ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="r", ha="center", va="center",
-                                fontsize=8)
+                        ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="m", ha="center", va="top",
+                                fontsize=10)
                     ax.set_title(f"RadViz (Color by {name})");
                     ax.set_xlabel("RadViz X");
                     ax.set_ylabel("RadViz Y");
@@ -934,7 +947,7 @@ def run_combined_workflow():
                     ax.set_aspect('equal');  # Equal aspect ratio
                     plt.colorbar(sc, ax=ax, label=name);  # Color bar for objective values
                     ax.legend(loc="upper right")
-                    plt.tight_layout()
+                    plt.tight_layout(pad=2.0)
                     sfname = sanitize_filename_component(name);  # Sanitize name for filename
                     plt.savefig(os.path.join(PLOTS_DIR, f"radviz_opt_{sfname}.png"));
                     plt.close(fig)
@@ -987,7 +1000,7 @@ def run_combined_workflow():
             ax_scatter_s.set_title(plot_title_s);
             ax_scatter_s.legend(fontsize='small', loc='best')
             ax_scatter_s.grid(True, linestyle='--', alpha=0.5);
-            plt.tight_layout()
+            plt.tight_layout(pad=2.0)
 
             stitle = sanitize_filename_component(plot_title_s).replace('vs', '_VS_');  # Sanitize for filename
             plt.savefig(os.path.join(PLOTS_DIR, f"scatter_opt_{stitle}.png"));
@@ -1035,7 +1048,7 @@ def run_combined_workflow():
         for i, (series, title) in enumerate(all_target_series_for_global_plot):
             plot_target_distribution(series, title, axs_all_dist[i, 0], axs_all_dist[i, 1])
         try:
-            fig_all_dist.tight_layout(rect=[0, 0, 1, 0.98])
+            fig_all_dist.tight_layout(rect=[0, 0, 1, 0.98],pad=2.0)
         except UserWarning as e:
             print(f"Warn tight_layout (all_dist): {e}")
         dist_path = os.path.join(PLOTS_DIR, "all_targets_distributions.png")
@@ -1052,7 +1065,7 @@ def run_combined_workflow():
             plot_combined_top_n_feature_importances(rf_model, xgb_model, "RandomForest", "XGBoost", f_names,
                                                     TOP_N_FEATURES, suffix, axs_fi[i, 0])
         try:
-            fig_fi.tight_layout(rect=[0, 0, 1, 0.98])
+            fig_fi.tight_layout(rect=[0, 0, 1, 0.98],pad=2.0)
         except UserWarning as e:
             print(f"Warn tight_layout (all_fi): {e}")
         fi_path = os.path.join(PLOTS_DIR, "all_targets_feature_importances.png")
