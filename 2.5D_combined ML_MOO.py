@@ -738,7 +738,7 @@ def run_combined_workflow():
             print(f"    Fitting global_problem_scaler on X_train_orig of first target '{target_name}'.")
             global_problem_scaler = StandardScaler().fit(X_train_orig)
 
-        # Scale features
+        # Scale features --
         Xs_train = global_problem_scaler.transform(X_train_orig)
         Xs_test = global_problem_scaler.transform(X_test_orig)
 
