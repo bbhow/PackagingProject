@@ -955,6 +955,33 @@ def run_combined_workflow():
     else:
         print("Skipping RadViz (Opt) plots due to no data or insufficient dimensions.")
 
+    # --- Combine All RadViz Plots into One Image ---
+    combined_radviz_paths = []
+    for name in active_objective_names_for_pymoo:
+        sfname = sanitize_filename_component(name)
+        img_path = os.path.join(PLOTS_DIR, f"radviz_opt_{sfname}.png")
+        if os.path.exists(img_path):
+            combined_radviz_paths.append(img_path)
+
+    if len(combined_radviz_paths) == 4:  # Expecting 4 RadViz plots
+        import matplotlib.image as mpimg
+
+        fig_combined, axs_combined = plt.subplots(2, 2, figsize=(14, 12))
+        axs_combined = axs_combined.flatten()
+
+        for ax, img_path in zip(axs_combined, combined_radviz_paths):
+            img = mpimg.imread(img_path)
+            ax.imshow(img)
+            ax.axis('off')
+
+        fig_combined.suptitle("Combined RadViz Optimization Plots", fontsize=18)
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        combined_path = os.path.join(PLOTS_DIR, "combined_radviz_plots.png")
+        fig_combined.savefig(combined_path, dpi=300)
+        plt.close(fig_combined)
+        print(f"Saved combined RadViz plot to {combined_path}")
+    else:
+        print("Skipped combined RadViz image: 4 RadViz plots not found.")
     print("\n5b. Generating 2D scatter plots (Pareto Fronts)...")
     if pareto_F is not None and len(pareto_F) > 0 and pareto_F.shape[1] >= 2:
         # Create scatter plots for every pair of objectives
