@@ -164,7 +164,7 @@ def plot_target_distribution(target_series, full_target_name_for_title, ax_hist,
         data_for_hist = target_series.dropna()
         if data_for_hist.empty: raise ValueError("Target series empty for hist")
         ax_hist.hist(data_for_hist, bins='auto', edgecolor='k', alpha=0.7)
-        ax_hist.set_title(f'Histogram - {full_target_name_for_title}')
+        ax_hist.set_title(f'Histogram - {full_target_name_for_title}',fontweight='bold')
         ax_hist.set_xlabel('Target Value');
         ax_hist.set_ylabel('Frequency')
         ax_hist.grid(True, linestyle='--', alpha=0.7)
@@ -176,7 +176,7 @@ def plot_target_distribution(target_series, full_target_name_for_title, ax_hist,
         data_for_box = target_series.dropna()
         if data_for_box.empty: raise ValueError("Target series empty for boxplot")
         ax_box.boxplot(data_for_box, vert=False, widths=0.7, patch_artist=True, medianprops={'color': 'black'})
-        ax_box.set_title(f'Box Plot - {full_target_name_for_title}')
+        ax_box.set_title(f'Box Plot - {full_target_name_for_title}',fontweight="bold")
         ax_box.set_yticklabels([]);
         ax_box.set_xlabel('Target Value')
         ax_box.grid(True, linestyle='--', alpha=0.7)
@@ -236,7 +236,7 @@ def _plot_single_validation_curve(ax, estimator_instance, X, y, param_name, para
 
     ax.set_xticks(plot_param_range);
     ax.set_xticklabels(tick_labels, rotation=30, ha='right')
-    ax.set_title(f"Validation Curve {title_suffix} ({param_name})")
+    ax.set_title(f"Validation Curve {title_suffix} ({param_name})",fontweight='bold')
     ax.set_xlabel(str(param_name));
     ax.set_ylabel(ylabel)
     ax.legend(loc="best");
@@ -285,7 +285,7 @@ def _plot_single_learning_curve(ax, estimator_instance, X, y, scoring, title_suf
     ax.fill_between(train_sizes_abs, plot_test_scores_mean - test_scores_std, plot_test_scores_mean + test_scores_std,
                     alpha=0.1, color="navy")
 
-    ax.set_title(f"Learning Curve {title_suffix}")
+    ax.set_title(f"Learning Curve {title_suffix}",fontweight='bold')
     ax.set_xlabel("Training examples");
     ax.set_ylabel(ylabel)
     ax.legend(loc="best");
@@ -305,7 +305,7 @@ def _plot_single_actual_vs_predicted(ax, y_true, y_pred, dataset_name_str):
     y_pred_clean = y_pred[~np.isnan(y_true) & ~np.isnan(y_pred)]
     if len(y_true_clean) == 0:
         ax.text(0.5, 0.5, 'No valid data points', ha='center', va='center', transform=ax.transAxes)
-        ax.set_title(f"Actual vs. Predicted - {dataset_name_str}\nNo Valid Data");
+        ax.set_title(f"Actual vs. Predicted - {dataset_name_str}\nNo Valid Data",fontweight='bold');
         return
 
     ax.scatter(y_true_clean, y_pred_clean, alpha=0.6, edgecolors='k', s=50, label="Data points")
@@ -318,7 +318,7 @@ def _plot_single_actual_vs_predicted(ax, y_true, y_pred, dataset_name_str):
     ax.plot([plot_min, plot_max], [plot_min, plot_max], 'r--', lw=2, label="Ideal (y=x)")  # Perfect prediction line
     ax.set_xlabel("Actual Values");
     ax.set_ylabel("Predicted Values")
-    ax.set_title(f"Actual vs. Predicted - {dataset_name_str}")
+    ax.set_title(f"Actual vs. Predicted - {dataset_name_str}",fontweight='bold')
     ax.legend(loc="best");
     ax.grid(True)
     ax.set_xlim(plot_min, plot_max);
@@ -392,7 +392,7 @@ def generate_diagnostic_subplots(estimator_class, base_params,
     else:
         err_msg = 'Model fit/instantiation failed' if (initial_model_fit_error or actual_fitting_error) else 'Pred. N/A'
         axs[0, 2].text(0.5, 0.5, err_msg, ha='center', va='center', transform=axs[0, 2].transAxes)
-        axs[0, 2].set_title(f"Actual vs. Predicted - Training\n{err_msg}")
+        axs[0, 2].set_title(f"Actual vs. Predicted - Training\n{err_msg}",fontweight='bold')
 
     # --- Learning Curves (Row 2, Col 1 & 2) ---
     if model_for_lc_pred is not None and not actual_fitting_error:  # Only plot if model was successfully fit
@@ -416,7 +416,7 @@ def generate_diagnostic_subplots(estimator_class, base_params,
         axs[1, 2].text(0.5, 0.5, err_msg, ha='center', va='center', transform=axs[1, 2].transAxes)
         axs[1, 2].set_title(f"Actual vs. Predicted - Test\n{err_msg}")
 
-    fig.suptitle(main_plot_title, fontsize=18)
+    fig.suptitle(main_plot_title, fontsize=18,fontweight='bold')
     try:
         plt.tight_layout(rect=[0, 0.03, 1, 0.95],pad=2.0)  # Adjust layout to prevent title overlap
     except UserWarning as e:  # Catch potential UserWarning from tight_layout
@@ -489,7 +489,7 @@ def plot_combined_top_n_feature_importances(model1, model2, model1_name, model2_
 
     ax.set_xlabel('Feature Importance');
     ax.set_ylabel('Features')
-    ax.set_title(f"Top {top_n} Feature Importances - {plot_title_suffix}")
+    ax.set_title(f"Top {top_n} Feature Importances - {plot_title_suffix}",fontweight='bold')
     ax.set_yticks(index);
     ax.set_yticklabels(top_features_df['feature'])  # Feature names as y-ticks
     ax.legend();
@@ -974,7 +974,7 @@ def run_combined_workflow():
             ax.imshow(img)
             ax.axis('off')
 
-        fig_combined.suptitle("Combined RadViz Optimization Plots", fontsize=18)
+        fig_combined.suptitle("Combined RadViz Optimization Plots", fontsize=18,fontweight='bold')
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
         combined_path = os.path.join(PLOTS_DIR, "combined_radviz_plots.png")
         fig_combined.savefig(combined_path, dpi=300)
@@ -1024,7 +1024,7 @@ def run_combined_workflow():
 
             ax_scatter_s.set_xlabel(f"{obj1_name_s}");
             ax_scatter_s.set_ylabel(f"{obj2_name_s}")
-            ax_scatter_s.set_title(plot_title_s);
+            ax_scatter_s.set_title(plot_title_s,fontweight='bold');
             ax_scatter_s.legend(fontsize='small', loc='best')
             ax_scatter_s.grid(True, linestyle='--', alpha=0.5);
             plt.tight_layout(pad=2.0)
@@ -1087,7 +1087,7 @@ def run_combined_workflow():
     num_fi_plots = len(all_feature_importance_data)
     if num_fi_plots > 0:
         fig_fi, axs_fi = plt.subplots(num_fi_plots, 1, figsize=(12, 7 * num_fi_plots), squeeze=False)
-        fig_fi.suptitle("Combined Feature Importances (RF vs XGB) per Target", fontsize=16, y=0.99)
+        fig_fi.suptitle("Combined Feature Importances (RF vs XGB) per Target", fontsize=16, y=0.99,fontweight='bold')
         for i, (rf_model, xgb_model, f_names, suffix) in enumerate(all_feature_importance_data):
             plot_combined_top_n_feature_importances(rf_model, xgb_model, "RandomForest", "XGBoost", f_names,
                                                     TOP_N_FEATURES, suffix, axs_fi[i, 0])
