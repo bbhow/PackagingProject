@@ -937,7 +937,7 @@ def run_combined_workflow():
                     ax.plot(poly_x, poly_y, "--", c="r", lw=1.5, label="Objective Anchors")
                     ax.scatter(anchors[:, 0], anchors[:, 1], marker="^", c="r", s=120)  # Mark anchors
                     for il, lab in enumerate(active_objective_names_for_pymoo):  # Label anchors
-                        ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="m", ha="center", va="top",
+                        ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="m", ha="center", va="bottom", bbox=dict(facecolor='white', edgecolor='none', alpha=0.9, boxstyle='round'),
                                 fontsize=10)
                     ax.set_title(f"RadViz (Color by {name})");
                     ax.set_xlabel("RadViz X");
@@ -945,7 +945,7 @@ def run_combined_workflow():
                     ax.axhline(0, c='k', lw=0.5, ls='--');  # Center lines
                     ax.axvline(0, c='k', lw=0.5, ls='--');
                     ax.set_aspect('equal');  # Equal aspect ratio
-                    plt.colorbar(sc, ax=ax, label=name);  # Color bar for objective values
+                    plt.colorbar(sc, ax=ax, label=name,location='bottom');  # Color bar for objective values
                     ax.legend(loc="upper right")
                     plt.tight_layout(pad=2.0)
                     sfname = sanitize_filename_component(name);  # Sanitize name for filename
