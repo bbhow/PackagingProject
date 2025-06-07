@@ -742,7 +742,7 @@ def run_combined_workflow():
         Xs_train = global_problem_scaler.transform(X_train_orig)
         Xs_test = global_problem_scaler.transform(X_test_orig)
 
-        # Prepare names for plots and files
+        # Prepare names for plots and file
         file_prefix = "file"
         if target_name in target_info_map and 'file_name_prefix' in target_info_map[target_name]:
             file_prefix = target_info_map[target_name]['file_name_prefix']
