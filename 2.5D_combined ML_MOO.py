@@ -238,7 +238,7 @@ def _plot_single_validation_curve(ax, estimator_instance, X, y, param_name, para
                     plot_train_scores_mean + train_scores_std, alpha=0.2, color="darkorange")
     ax.plot(plot_param_range, plot_test_scores_mean, label="Cross-validation score", color="navy", marker='o', lw=2)
     ax.fill_between(plot_param_range, plot_test_scores_mean - test_scores_std, plot_test_scores_mean + test_scores_std,
-                    alpha=0.2, color="navy")
+                    alpha=0.2, color="navy", label="±1 standard deviation")
 
     ax.set_xticks(plot_param_range);
     ax.set_xticklabels(tick_labels, rotation=30, ha='right')
@@ -295,7 +295,7 @@ def _plot_single_learning_curve(ax, estimator_instance, X, y, scoring, title_suf
                     plot_train_scores_mean + train_scores_std, alpha=0.1, color="darkorange")
     ax.plot(train_sizes_abs, plot_test_scores_mean, 'o-', color="navy", label="Cross-validation score", lw=2)
     ax.fill_between(train_sizes_abs, plot_test_scores_mean - test_scores_std, plot_test_scores_mean + test_scores_std,
-                    alpha=0.1, color="navy")
+                    alpha=0.1, color="navy", label="±1 standard deviation")
 
     ax.set_title(f"Learning Curve {title_suffix}",fontweight='bold')
     ax.set_xlabel("Training examples");
