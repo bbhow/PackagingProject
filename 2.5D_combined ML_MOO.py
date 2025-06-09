@@ -219,7 +219,11 @@ def _plot_single_validation_curve(ax, estimator_instance, X, y, param_name, para
         ax.set_ylim(bottom=0, top=max_val * 1.1 if max_val > 0 else 1.0)  # Ensure MSE plot starts at 0
     elif scoring == "r2":
         ylabel = "R² Score";
-        ax.set_ylim(-0.1, 1.1)  # R² range
+        # ax.set_ylim(-0.1, 1.1)  # R² range
+        # Dynamically adjust y-axis limits based on min/max of mean ± std for both training and validation scores
+        min_y = min(np.nanmin(raw_train_scores_mean - train_scores_std),np.nanmin(raw_test_scores_mean - test_scores_std))
+        max_y = max(np.nanmax(raw_train_scores_mean + train_scores_std),np.nanmax(raw_test_scores_mean + test_scores_std))
+        ax.set_ylim(min_y - 0.05, max_y + 0.05)
 
     param_range_array = np.array(param_range)
     # Use numerical index for x-axis if param_range contains non-numeric types, else use actual param values
@@ -276,7 +280,13 @@ def _plot_single_learning_curve(ax, estimator_instance, X, y, scoring, title_suf
         ax.set_ylim(bottom=0, top=max_val * 1.1 if max_val > 0 else 1.0)
     elif scoring == "r2":
         ylabel = "R² Score";
-        ax.set_ylim(-0.1, 1.1)
+        # ax.set_ylim(-0.1, 1.1)
+        # Dynamically adjust y-axis limits based on min/max of mean ± std for both training and validation scores
+        min_y = min(np.nanmin(raw_train_scores_mean - train_scores_std),
+                    np.nanmin(raw_test_scores_mean - test_scores_std))
+        max_y = max(np.nanmax(raw_train_scores_mean + train_scores_std),
+                    np.nanmax(raw_test_scores_mean + test_scores_std))
+        ax.set_ylim(min_y - 0.05, max_y + 0.05)
 
     ax.plot(train_sizes_abs, plot_train_scores_mean, 'o-', color="darkorange", label="Training score", lw=2)
     ax.fill_between(train_sizes_abs, plot_train_scores_mean - train_scores_std,
@@ -325,6 +335,23 @@ def _plot_single_actual_vs_predicted(ax, y_true, y_pred, dataset_name_str):
     ax.set_ylim(plot_min, plot_max)
     ax.set_aspect('equal', adjustable='box')  # Ensure square plot with equal scaling
 
+def generate_combined_actual_vs_predicted_grid(scatter_info_list, output_path):
+    """
+    Draws all Actual vs. Predicted plots into a single 2x3 figure.
+    scatter_info_list: List of tuples -> (y_true, y_pred, dataset_name)
+    output_path: Path to save the combined figure
+    """
+    fig, axs = plt.subplots(2, 3, figsize=(20, 12))
+    axs = axs.flatten()
+    for i, (y_true, y_pred, dataset_name) in enumerate(scatter_info_list):
+        if i >= 6: break  # Limit to 6 plots
+        _plot_single_actual_vs_predicted(axs[i], y_true, y_pred, dataset_name)
+
+    fig.suptitle("Actual vs. Predicted - All Targets", fontsize=20, fontweight='bold')
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.savefig(output_path, dpi=300)
+    plt.close(fig)
+    print(f"Saved combined Actual vs. Predicted plot to {output_path}")
 
 def generate_diagnostic_subplots(estimator_class, base_params,
                                  X_train, y_train, X_test, y_test,
@@ -982,6 +1009,7 @@ def run_combined_workflow():
         print(f"Saved combined RadViz plot to {combined_path}")
     else:
         print("Skipped combined RadViz image: 4 RadViz plots not found.")
+
     print("\n5b. Generating 2D scatter plots (Pareto Fronts)...")
     if pareto_F is not None and len(pareto_F) > 0 and pareto_F.shape[1] >= 2:
         # Create scatter plots for every pair of objectives
@@ -1033,6 +1061,37 @@ def run_combined_workflow():
             plt.savefig(os.path.join(PLOTS_DIR, f"scatter_opt_{stitle}.png"));
             plt.close(fig_scatter_s)
             print(f"Saved Scatter opt plot: scatter_opt_{stitle}.png")
+
+    # --- Combine All Scatter Optimization Plots into One Image ---
+    scatter_opt_paths = []
+    for fname in os.listdir(PLOTS_DIR):
+        if fname.startswith("scatter_opt_") and fname.endswith(".png"):
+            scatter_opt_paths.append(os.path.join(PLOTS_DIR, fname))
+
+    scatter_opt_paths.sort()  # Ensure consistent order
+    selected_paths = scatter_opt_paths[:6]  # Up to 6 plots
+
+    if selected_paths:
+        import matplotlib.image as mpimg
+
+        fig_scatteropt_combined, axs_combined = plt.subplots(2, 3, figsize=(20, 12))
+        axs_combined = axs_combined.flatten()
+
+        for ax, img_path in zip(axs_combined, selected_paths):
+            img = mpimg.imread(img_path)
+            ax.imshow(img)
+            ax.axis('off')
+
+        for j in range(len(selected_paths), 6):
+            axs_combined[j].axis('off')
+
+        fig_scatteropt_combined.suptitle("Combined Scatter Optimization Plots", fontsize=18, fontweight='bold')
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        combined_so_path = os.path.join(PLOTS_DIR, "combined_scatter_opt_plots.png")
+        fig_scatteropt_combined.savefig(combined_so_path, dpi=300)
+        plt.close(fig_scatteropt_combined)
+        print(f"Saved combined Scatter Optimization plot to {combined_so_path}")
+
     else:
         print("Skipping 2D Scatter (Opt) plots due to no data or insufficient objectives.")
 
@@ -1115,4 +1174,3 @@ if __name__ == "__main__":
     # - 2.5D_Thermal_lidless.xlsx
 
     run_combined_workflow()
-
