@@ -1166,6 +1166,35 @@ def run_combined_workflow():
         print(f"Saved combined feature importances plot to {fi_path}");
         plt.close(fig_fi)
 
+    # === Extra: Output Top-K Pareto Designs by Aggregated Score ===
+    try:
+        if 'results_df' in locals() and not results_df.empty:
+            print("\nGenerating Top-K Pareto Designs by Aggregated Score...")
+
+            # Extract only the objective columns
+            obj_cols = [col for col in results_df.columns if col.startswith("Obj_")]
+            obj_df = results_df[obj_cols].copy()
+
+            # Normalize each objective column to [0,1] using min-max scaling
+            obj_norm = (obj_df - obj_df.min()) / (obj_df.max() - obj_df.min() + 1e-12)  # Add epsilon to avoid zero-div
+
+            # Compute mean score across all objectives (equal weights)
+            obj_norm['mean_score'] = obj_norm.mean(axis=1)
+
+            # Combine with original data and sort by mean_score ascending (lower = better)
+            topk_df = results_df.copy()
+            topk_df['aggregated_score'] = obj_norm['mean_score']
+            topk_df_sorted = topk_df.sort_values(by='aggregated_score', ascending=True).head(10)  # Top-10
+
+            # Save as CSV
+            output_csv_path = os.path.join(PLOTS_DIR, "top10_pareto_designs.csv")
+            topk_df_sorted.to_csv(output_csv_path, index_label="Rank")
+            print(f"Saved Top-10 aggregated Pareto designs to {output_csv_path}")
+        else:
+            print("Top-K design export skipped: results_df is missing or empty.")
+    except Exception as e:
+        print(f"Error while generating Top-K design table: {e}")
+
     print("\n--- Script finished. ---")
 
 
