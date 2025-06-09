@@ -1132,6 +1132,41 @@ def run_combined_workflow():
     else:
         print("Skipping CSV output (Opt) due to missing Pareto data.")
 
+    # === Extra: Correlation Heatmap Between Objectives (Pearson) ===
+    try:
+        if pareto_F is not None and len(pareto_F) > 1:
+            print("Generating correlation heatmap between objectives (matplotlib only)...")
+
+            obj_df_corr = pd.DataFrame(pareto_F, columns=active_objective_names_for_pymoo)
+            corr_matrix = obj_df_corr.corr()
+
+            fig_corr, ax_corr = plt.subplots(figsize=(8, 7))
+            cax = ax_corr.matshow(corr_matrix, cmap="coolwarm", vmin=-1, vmax=1)
+
+            ax_corr.set_xticks(range(len(corr_matrix.columns)))
+            ax_corr.set_yticks(range(len(corr_matrix.columns)))
+            ax_corr.set_xticklabels(corr_matrix.columns, rotation=45, ha="left", fontsize=10)
+            ax_corr.set_yticklabels(corr_matrix.columns, fontsize=10)
+
+            for (i, j), val in np.ndenumerate(corr_matrix.values):
+                ax_corr.text(j, i, f"{val:.2f}", ha='center', va='center', color='black', fontsize=9)
+
+            # Colorbar with label
+            cbar = fig_corr.colorbar(cax, ax=ax_corr, shrink=0.8, pad=0.03)
+            cbar.ax.set_ylabel("Pearson Correlation (−1 to 1)", fontsize=10)
+
+            ax_corr.set_title("Correlation Heatmap of Objectives",fontsize=14, fontweight="bold", pad=20)
+
+            plt.tight_layout(rect=[0, 0, 1, 0.95])  # reserve space for title
+            heatmap_path = os.path.join(PLOTS_DIR, "correlation_heatmap_objectives.png")
+            plt.savefig(heatmap_path, dpi=300)
+            plt.close(fig_corr)
+            print(f"Saved correlation heatmap to {heatmap_path}")
+        else:
+            print("Skipping correlation heatmap: Pareto objective values missing.")
+    except Exception as e:
+        print(f"Error generating correlation heatmap: {e}")
+
     # 6. Generate Combined Diagnostic Plots (at the end)
     # Plot distributions of all original target variables
     num_all_targets = len(all_target_series_for_global_plot)
