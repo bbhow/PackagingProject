@@ -49,6 +49,8 @@ from pymoo.algorithms.moo.nsga2 import NSGA2
 from pymoo.termination import get_termination
 from pymoo.optimize import minimize
 
+from matplotlib.ticker import FuncFormatter
+
 # --- Configuration ---
 FILE_CONFIGS = [
     {'name': '2.5D_SJR.xlsx'},
@@ -333,6 +335,11 @@ def _plot_single_actual_vs_predicted(ax, y_true, y_pred, dataset_name_str):
     ax.grid(True)
     ax.set_xlim(plot_min, plot_max);
     ax.set_ylim(plot_min, plot_max)
+    # Format axis tick labels to show only 3 decimal places for better readability
+    def smart_format(x, _):
+        return f"{x:.3f}".rstrip('0').rstrip('.') if isinstance(x, float) else str(x)
+    ax.xaxis.set_major_formatter(FuncFormatter(smart_format))
+    ax.yaxis.set_major_formatter(FuncFormatter(smart_format))
     ax.set_aspect('equal', adjustable='box')  # Ensure square plot with equal scaling
 
 def generate_combined_actual_vs_predicted_grid(scatter_info_list, output_path):
@@ -1174,4 +1181,3 @@ if __name__ == "__main__":
     # - 2.5D_Thermal_lidless.xlsx
 
     run_combined_workflow()
-
