@@ -1073,6 +1073,7 @@ def run_combined_workflow():
                         y_smooth_exp1 = exp_func_type1(x_smooth_exp1, *params_exp1)
                         #ax_scatter_s.plot(x_smooth_exp1, y_smooth_exp1, linestyle='--', color='red',
                         #                  lw=2, label='Pareto Curve (Exp: ae^(bx)+c)', zorder=3)
+
                     except (RuntimeError, ValueError) as e_exp_fit:  # Fallback if curve fit fails
                         print(
                             f"Exponential fit failed for plot '{plot_title_s}': {e_exp_fit}. Plotting linear fallback.")
