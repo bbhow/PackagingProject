@@ -970,9 +970,35 @@ def run_combined_workflow():
                     poly_y = np.append(anchors[:, 1], anchors[0, 1])
                     ax.plot(poly_x, poly_y, "--", c="r", lw=1.5, label="Objective Anchors")
                     ax.scatter(anchors[:, 0], anchors[:, 1], marker="^", c="r", s=120)  # Mark anchors
-                    for il, lab in enumerate(active_objective_names_for_pymoo):  # Label anchors
-                        ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="m", ha="center", va="bottom", bbox=dict(facecolor='white', edgecolor='none', alpha=0.9, boxstyle='round'),
-                                fontsize=10)
+                    #for il, lab in enumerate(active_objective_names_for_pymoo):  # Label anchors
+                    #    ax.text(anchors[il, 0] * 1.08, anchors[il, 1] * 1.08, lab, c="m", ha="center", va="bottom", bbox=dict(facecolor='white', edgecolor='none', alpha=0.9, boxstyle='round'),
+                    #            fontsize=10)
+                    for il, lab in enumerate(active_objective_names_for_pymoo):
+                        x_anchor = anchors[il, 0]
+                        y_anchor = anchors[il, 1]
+
+                        rotation_angle = 0
+                        offset = 1.25
+
+                        if abs(x_anchor) > 0.7 and abs(y_anchor) < 0.3:
+                            rotation_angle = 90
+                            offset = 0.85
+                        elif abs(y_anchor) > 0.7 and abs(x_anchor) < 0.3:
+                            rotation_angle = 0
+                            offset = 0.8
+
+                        ax.text(
+                            x_anchor * offset,
+                            y_anchor * offset,
+                            lab,
+                            c="m",
+                            ha="center",
+                            va="center",
+                            rotation=rotation_angle,
+                            fontsize=10,
+                            bbox=dict(facecolor='white', edgecolor='none', alpha=0.8, boxstyle='round')
+                        )
+
                     ax.set_title(f"RadViz (Color by {name})");
                     ax.set_xlabel("RadViz X");
                     ax.set_ylabel("RadViz Y");
@@ -1045,8 +1071,8 @@ def run_combined_workflow():
                                                    p0=initial_guess_exp1, bounds=bounds_exp1, maxfev=5000)
                         x_smooth_exp1 = np.linspace(interp_x_final.min(), interp_x_final.max(), 300)
                         y_smooth_exp1 = exp_func_type1(x_smooth_exp1, *params_exp1)
-                        ax_scatter_s.plot(x_smooth_exp1, y_smooth_exp1, linestyle='--', color='red',
-                                          lw=2, label='Pareto Curve (Exp: ae^(bx)+c)', zorder=3)
+                        #ax_scatter_s.plot(x_smooth_exp1, y_smooth_exp1, linestyle='--', color='red',
+                        #                  lw=2, label='Pareto Curve (Exp: ae^(bx)+c)', zorder=3)
                     except (RuntimeError, ValueError) as e_exp_fit:  # Fallback if curve fit fails
                         print(
                             f"Exponential fit failed for plot '{plot_title_s}': {e_exp_fit}. Plotting linear fallback.")
