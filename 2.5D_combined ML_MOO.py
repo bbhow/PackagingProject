@@ -798,6 +798,10 @@ def run_combined_workflow():
                                          f"{plot_target_name_for_title}_RF")
             trained_rf_model = train_evaluate_final_model(RandomForestRegressor, final_rf_params, Xs_train, y_train,
                                                           Xs_test, y_test, f"Final RF ({plot_target_name_for_title})")
+            if trained_rf_model is not None:
+                r2_train_rf = trained_rf_model.score(Xs_train, y_train)
+                r2_test_rf = trained_rf_model.score(Xs_test, y_test)
+                print(f"✅ RF R² Score — Train: {r2_train_rf:.4f}, Test: {r2_test_rf:.4f}")
             if trained_rf_model: fitted_rf_models_dict[target_name] = trained_rf_model  # Store if successful
         else:
             print(
@@ -819,6 +823,10 @@ def run_combined_workflow():
                                          f"{plot_target_name_for_title}_XGB")
             trained_xgb_model = train_evaluate_final_model(XGBRegressor, final_xgb_params, Xs_train, y_train, Xs_test,
                                                            y_test, f"Final XGBoost ({plot_target_name_for_title})")
+            if trained_xgb_model is not None:
+                r2_train_xgb = trained_xgb_model.score(Xs_train, y_train)
+                r2_test_xgb = trained_xgb_model.score(Xs_test, y_test)
+                print(f"✅ XGBoost R² Score — Train: {r2_train_xgb:.4f}, Test: {r2_test_xgb:.4f}")
         else:
             print(
                 f"    Skipping XGBoost training for '{target_name}' due to hyperparameter (max_depth) determination error.")
