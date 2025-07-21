@@ -242,10 +242,12 @@ def _plot_single_validation_curve(ax, estimator_instance, X, y, param_name, para
 
     ax.set_xticks(plot_param_range);
     ax.set_xticklabels(tick_labels, rotation=30, ha='right')
-    ax.set_title(f"Validation Curve {title_suffix} ({param_name})",fontweight='bold')
-    ax.set_xlabel(str(param_name));
-    ax.set_ylabel(ylabel)
-    ax.legend(loc="best");
+    ax.set_title(f"Validation Curve {title_suffix} ({param_name})",fontweight='bold', fontsize=20)
+    ax.set_xlabel(str(param_name), fontsize=20)
+    ax.set_ylabel(ylabel, fontsize=20)
+    ax.legend(loc="best", fontsize=16)
+    ax.tick_params(axis='x', labelsize=18)
+    ax.tick_params(axis='y', labelsize=18)
     ax.grid(True)
 
 
@@ -297,10 +299,12 @@ def _plot_single_learning_curve(ax, estimator_instance, X, y, scoring, title_suf
     ax.fill_between(train_sizes_abs, plot_test_scores_mean - test_scores_std, plot_test_scores_mean + test_scores_std,
                     alpha=0.1, color="navy", label="±1 standard deviation")
 
-    ax.set_title(f"Learning Curve {title_suffix}",fontweight='bold')
-    ax.set_xlabel("Training examples");
-    ax.set_ylabel(ylabel)
-    ax.legend(loc="best");
+    ax.set_title(f"Learning Curve {title_suffix}",fontweight='bold', fontsize=20)
+    ax.set_xlabel("Training examples", fontsize=20);
+    ax.set_ylabel(ylabel, fontsize=20)
+    ax.legend(loc="best", fontsize=16)
+    ax.tick_params(axis='x', labelsize=18)
+    ax.tick_params(axis='y', labelsize=18)
     ax.grid(True)
     ax.set_xlim(left=0, right=train_sizes_abs.max() * 1.05 if train_sizes_abs.size > 0 else 1)
 
@@ -328,10 +332,12 @@ def _plot_single_actual_vs_predicted(ax, y_true, y_pred, dataset_name_str):
     if plot_min == plot_max: plot_min -= 0.5; plot_max += 0.5  # Handle case where all points are same
 
     ax.plot([plot_min, plot_max], [plot_min, plot_max], 'r--', lw=2, label="Ideal (y=x)")  # Perfect prediction line
-    ax.set_xlabel("Actual Values");
-    ax.set_ylabel("Predicted Values")
-    ax.set_title(f"Actual vs. Predicted - {dataset_name_str}",fontweight='bold')
-    ax.legend(loc="best");
+    ax.set_xlabel("Actual Values", fontsize=20)
+    ax.set_ylabel("Predicted Values", fontsize=20)
+    ax.set_title(f"Actual vs. Predicted - {dataset_name_str}", fontweight='bold', fontsize=20)
+    ax.legend(loc="best", fontsize=16)
+    ax.tick_params(axis='x', labelsize=18)
+    ax.tick_params(axis='y', labelsize=18)
     ax.grid(True)
     ax.set_xlim(plot_min, plot_max);
     ax.set_ylim(plot_min, plot_max)
@@ -450,7 +456,7 @@ def generate_diagnostic_subplots(estimator_class, base_params,
         axs[1, 2].text(0.5, 0.5, err_msg, ha='center', va='center', transform=axs[1, 2].transAxes)
         axs[1, 2].set_title(f"Actual vs. Predicted - Test\n{err_msg}")
 
-    fig.suptitle(main_plot_title, fontsize=18,fontweight='bold')
+    fig.suptitle(main_plot_title, fontsize=22,fontweight='bold')
     try:
         plt.tight_layout(rect=[0, 0.03, 1, 0.95],pad=2.0)  # Adjust layout to prevent title overlap
     except UserWarning as e:  # Catch potential UserWarning from tight_layout
@@ -548,8 +554,8 @@ def train_evaluate_final_model(model_class, model_params, X_train, y_train, X_te
     train_r2 = r2_score(y_train, y_pred_train)
     test_r2 = r2_score(y_test, y_pred_test)
     print(f"  --- {model_name_with_target} Final Evaluation ---")
-    print(f"    Training -> MSE: {train_mse:.4f}, R2: {train_r2:.4f}")
-    print(f"    Test     -> MSE: {test_mse:.4f}, R2: {test_r2:.4f}")
+    print(f"    Training -> MSE: {train_mse:.8f}, R2: {train_r2:.8f}")
+    print(f"    Test     -> MSE: {test_mse:.8f}, R2: {test_r2:.8f}")
     return model
 
 
@@ -1092,10 +1098,12 @@ def run_combined_workflow():
                     ax_scatter_s.plot(interp_x_final, interp_y_final, '-', color='darkcyan', lw=1.5,
                                       label='Pareto Front (Line)', zorder=1)
 
-            ax_scatter_s.set_xlabel(f"{obj1_name_s}");
-            ax_scatter_s.set_ylabel(f"{obj2_name_s}")
-            ax_scatter_s.set_title(plot_title_s,fontweight='bold');
-            ax_scatter_s.legend(fontsize='small', loc='best')
+            ax_scatter_s.set_xlabel(f"{obj1_name_s}", fontsize=24)
+            ax_scatter_s.set_ylabel(f"{obj2_name_s}", fontsize=24)
+            ax_scatter_s.set_title(plot_title_s,fontweight='bold', fontsize=24);
+            ax_scatter_s.legend(fontsize=20, loc='best')
+            ax_scatter_s.tick_params(axis='x', labelsize=20)
+            ax_scatter_s.tick_params(axis='y', labelsize=20)
             ax_scatter_s.grid(True, linestyle='--', alpha=0.5);
             plt.tight_layout(pad=2.0)
 
@@ -1127,7 +1135,7 @@ def run_combined_workflow():
         for j in range(len(selected_paths), 6):
             axs_combined[j].axis('off')
 
-        fig_scatteropt_combined.suptitle("Combined Scatter Optimization Plots", fontsize=18, fontweight='bold')
+        fig_scatteropt_combined.suptitle("Combined Scatter Optimization Plots", fontsize=24, fontweight='bold')
         plt.tight_layout(rect=[0, 0.03, 1, 0.95])
         combined_so_path = os.path.join(PLOTS_DIR, "combined_scatter_opt_plots.png")
         fig_scatteropt_combined.savefig(combined_so_path, dpi=300)
