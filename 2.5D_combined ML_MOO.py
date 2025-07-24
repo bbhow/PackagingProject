@@ -996,10 +996,10 @@ def run_combined_workflow():
 
                         if abs(x_anchor) > 0.7 and abs(y_anchor) < 0.3:
                             rotation_angle = 90
-                            offset = 0.85
+                            offset = 1.35
                         elif abs(y_anchor) > 0.7 and abs(x_anchor) < 0.3:
                             rotation_angle = 0
-                            offset = 0.8
+                            offset = 1.4
 
                         ax.text(
                             x_anchor * offset,
